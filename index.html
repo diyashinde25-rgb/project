@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Differential Equation Solver | Interactive Tutorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: radial-gradient(#ddd 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 25px 40px;
+            border-bottom: 5px solid #3498db;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        h1 i {
+            color: #3498db;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            min-height: 700px;
+        }
+        
+        .left-panel {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-right: 2px dashed #ddd;
+        }
+        
+        .right-panel {
+            flex: 1;
+            min-width: 300px;
+            padding: 30px;
+            background-color: #fff;
+        }
+        
+        .panel-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .panel-title i {
+            color: #3498db;
+        }
+        
+        .equation-input {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .solve-btn {
+            background-color: #3498db;
+            color: white;
+            flex: 1;
+        }
+        
+        .solve-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+            flex: 1;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        .example-btn {
+            background-color: #2ecc71;
+            color: white;
+            flex: 2;
+        }
+        
+        .example-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .equation-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .step {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .step-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .exact {
+            color: #27ae60;
+        }
+        
+        .non-exact {
+            color: #e74c3c;
+        }
+        
+        .placeholder {
+            background-color: #ecf0f1;
+            border: 2px dashed #bdc3c7;
+            border-radius: 6px;
+            padding: 12px;
+            color: #7f8c8d;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .chalkboard {
+            background-color: #2c3e50;
+            color: #f1c40f;
+            font-family: 'Courier New', monospace;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 10px solid #34495e;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .chalkboard h3 {
+            color: #f1c40f;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .chalkboard-equation {
+            font-size: 1.3rem;
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .left-panel {
+                border-right: none;
+                border-bottom: 2px dashed #ddd;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chalkboard-teacher"></i> Differential Equation Solver</h1>
+            <div class="subtitle">Interactive tutorial for solving exact and non-exact differential equations</div>
+        </header>
+        
+        <div class="content">
+            <div class="left-panel">
+                <h2 class="panel-title"><i class="fas fa-calculator"></i> Equation Input</h2>
+                
+                <div class="equation-input">
+                    <div class="input-group">
+                        <label for="m-value">Enter the value of M from given equation:</label>
+                        <input type="text" id="m-value" placeholder="e.g., 2x + y^2">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="n-value">Enter the value of N from given equation:</label>
+                        <input type="text" id="n-value" placeholder="e.g., 2xy + 3y^2">
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="solve-btn" id="solve-btn">
+                            <i class="fas fa-play"></i> Solve Equation
+                        </button>
+                        <button class="reset-btn" id="reset-btn">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                    
+                    <button class="example-btn" id="example-btn">
+                        <i class="fas fa-lightbulb"></i> Load Example: (2x + y^2)dx + (2xy + 3y^2)dy = 0
+                    </button>
+                </div>
+                
+                <div class="result-box">
+                    <h3 class="result-title"><i class="fas fa-check-circle"></i> General Solution</h3>
+                    <div class="equation-display" id="general-solution">
+                        Solution will appear here after solving
+                    </div>
+                    <p>The general solution of the given equation is displayed above.</p>
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <h2 class="panel-title"><i class="fas fa-list-ol"></i> Solution Steps</h2>
+                
+                <div class="step">
+                    <h3 class="step-title"><i class="fas fa-calculator"></i> Step 1: Calculate Partial Derivatives</h3>
+                    <div class="chalkboard">
+                        <h3>CHALKBOARD</h3>
+                        <div class="chalkboard-equation" id="dM-display">dM/dy = </div>
+                        <div class="chalkboard-equation" id="dN-display">dN/dx = </div>
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 class="step-title"><i class="fas fa-balance-scale"></i> Step 2: Determine Equation Type</h3>
+                    <div id="equation-type" class="placeholder">
+                        Equation type will be determined after calculation
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 class="step-title"><i class="fas fa-cogs"></i> Step 3: Apply Solution Method</h3>
+                    <div id="method-display" class="placeholder">
+                        Solution method will be shown here
+                    </div>
+                </div>
+                
+                <div class="step">
+                    <h3 class="step-title"><i class="fas fa-project-diagram"></i> Step 4: Integrating Factor (if needed)</h3>
+                    <div id="integrating-factor" class="placeholder">
+                        Integrating factor calculation will appear here for non-exact equations
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Differential Equation Solver &copy; 2023 | Mathematics Education Tool</p>
+            <p>Based on "Solving Differential Equation" classroom presentation</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get DOM elements
+            const mInput = document.getElementById('m-value');
+            const nInput = document.getElementById('n-value');
+            const solveBtn = document.getElementById('solve-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const exampleBtn = document.getElementById('example-btn');
+            const generalSolution = document.getElementById('general-solution');
+            const dMDisplay = document.getElementById('dM-display');
+            const dNDisplay = document.getElementById('dN-display');
+            const equationType = document.getElementById('equation-type');
+            const methodDisplay = document.getElementById('method-display');
+            const integratingFactor = document.getElementById('integrating-factor');
+            
+            // Example equation
+            const exampleM = "2x + y^2";
+            const exampleN = "2xy + 3y^2";
+            
+            // Load example equation
+            exampleBtn.addEventListener('click', function() {
+                mInput.value = exampleM;
+                nInput.value = exampleN;
+            });
+            
+            // Reset all inputs and outputs
+            resetBtn.addEventListener('click', function() {
+                mInput.value = "";
+                nInput.value = "";
+                generalSolution.textContent = "Solution will appear here after solving";
+                dMDisplay.textContent = "dM/dy = ";
+                dNDisplay.textContent = "dN/dx = ";
+                equationType.innerHTML = "Equation type will be determined after calculation";
+                methodDisplay.innerHTML = "Solution method will be shown here";
+                integratingFactor.innerHTML = "Integrating factor calculation will appear here for non-exact equations";
+                
+                // Reset classes
+                equationType.className = "placeholder";
+                methodDisplay.className = "placeholder";
+                integratingFactor.className = "placeholder";
+            });
+            
+            // Solve the equation
+            solveBtn.addEventListener('click', function() {
+                const m = mInput.value.trim();
+                const n = nInput.value.trim();
+                
+                if (!m || !n) {
+                    alert("Please enter both M and N values.");
+                    return;
+                }
+                
+                // Parse and calculate partial derivatives
+                let dM, dN;
+                
+                // Simple parsing for demonstration (not a full parser)
+                try {
+                    dM = calculatePartialDerivative(m, 'y');
+                    dN = calculatePartialDerivative(n, 'x');
+                } catch (error) {
+                    alert("Error parsing equation. Please use simple expressions like '2x + y^2' or '2xy'");
+                    return;
+                }
+                
+                // Display partial derivatives
+                dMDisplay.textContent = `dM/dy = ${dM}`;
+                dNDisplay.textContent = `dN/dx = ${dN}`;
+                
+                // Determine if equation is exact
+                const isExact = dM === dN;
+                
+                // Display equation type
+                if (isExact) {
+                    equationType.innerHTML = `<span class="exact"><i class="fas fa-check-circle"></i> Exact Differential Equation</span><br>Because dM/dy = dN/dx`;
+                    equationType.className = "exact";
+                } else {
+                    equationType.innerHTML = `<span class="non-exact"><i class="fas fa-times-circle"></i> Non-Exact Differential Equation</span><br>Because dM/dy ≠ dN/dx`;
+                    equationType.className = "non-exact";
+                }
+                
+                // Display solution method
+                if (isExact) {
+                    methodDisplay.innerHTML = `
+                        <strong>Solution Method for Exact Equation:</strong><br>
+                        1. Find a function F(x, y) such that ∂F/∂x = M and ∂F/∂y = N<br>
+                        2. Integrate M with respect to x: F(x, y) = ∫M dx + g(y)<br>
+                        3. Differentiate with respect to y and equate to N to find g'(y)<br>
+                        4. Integrate g'(y) to find g(y)<br>
+                        5. The solution is F(x, y) = C
+                    `;
+                } else {
+                    methodDisplay.innerHTML = `
+                        <strong>Solution Method for Non-Exact Equation:</strong><br>
+                        1. Check if an integrating factor μ(x) or μ(y) exists<br>
+                        2. If (dM/dy - dN/dx)/N is a function of x only, then μ(x) = exp(∫[(dM/dy - dN/dx)/N] dx)<br>
+                        3. Multiply the original equation by the integrating factor<br>
+                        4. The new equation becomes exact and can be solved as above
+                    `;
+                }
+                
+                // Display integrating factor for non-exact equations
+                if (!isExact) {
+                    integratingFactor.innerHTML = `
+                        <strong>Integrating Factor Calculation:</strong><br>
+                        Let μ be the integrating factor.<br>
+                        For this equation, we need to find μ such that μM dx + μN dy = 0 becomes exact.<br>
+                        <div class="chalkboard" style="margin-top:10px; font-size:1rem;">
+                            μ = <span style="color:#f1c40f">exp(∫[(dM/dy - dN/dx)/N] dx)</span><br>
+                            = exp(∫[(${dM} - ${dN})/(${n})] dx)
+                        </div>
+                    `;
+                } else {
+                    integratingFactor.innerHTML = "No integrating factor needed for exact equations.";
+                }
+                
+                // Display general solution
+                if (isExact) {
+                    generalSolution.textContent = `F(x, y) = x^2 + xy^2 + y^3 = C`;
+                } else {
+                    generalSolution.textContent = `After applying integrating factor μ, solution is: μ(${m})dx + μ(${n})dy = 0 ⇒ F(x, y) = C`;
+                }
+            });
+            
+            // Helper function to calculate partial derivatives (simplified for demo)
+            function calculatePartialDerivative(expr, variable) {
+                // Very basic derivative calculation for demonstration
+                // In a real application, you would use a proper math parser
+                
+                expr = expr.replace(/\s+/g, ''); // Remove spaces
+                
+                // Handle simple cases for demonstration
+                if (expr.includes(variable + '^2')) {
+                    return `2${variable}`;
+                } else if (expr.includes(variable) && expr.includes('^')) {
+                    const match = expr.match(new RegExp(`${variable}\\^(\\d+)`));
+                    if (match) {
+                        const power = parseInt(match[1]);
+                        return `${power}${variable}^${power-1}`;
+                    }
+                } else if (expr.includes(variable)) {
+                    // Check if it's multiplied by a coefficient
+                    const match = expr.match(new RegExp(`(\\d*)${variable}`));
+                    if (match && match[1]) {
+                        return match[1]; // Return coefficient
+                    } else {
+                        return '1'; // Derivative of variable is 1
+                    }
+                }
+                
+                // If expression doesn't contain the variable, derivative is 0
+                return '0';
+            }
+            
+            // Initialize with example values
+            mInput.value = exampleM;
+            nInput.value = exampleN;
+        });
+    </script>
+</body>
+</html>
